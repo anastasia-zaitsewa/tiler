@@ -1,19 +1,12 @@
 package tiler.ui
 
 import tiler.ImageLoader
-import java.awt.Color
-import java.awt.Graphics2D
 import java.awt.GridLayout
-import java.awt.RenderingHints
 import java.awt.event.AdjustmentEvent
 import java.awt.event.AdjustmentListener
 import java.awt.event.ComponentEvent
 import java.awt.event.ComponentListener
-import java.awt.image.BufferedImage
-import javax.swing.BoundedRangeModel
-import javax.swing.ImageIcon
-import javax.swing.JLabel
-import javax.swing.JPanel
+import javax.swing.*
 import javax.swing.border.EmptyBorder
 
 /**
@@ -22,31 +15,37 @@ import javax.swing.border.EmptyBorder
  */
 class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
 
-    private val images: Array<BufferedImage?>?
+    private val images: Array<String>?
     private val icons: Array<JLabel?>?
-    /** Nubmer of rows that are visible in the viewport  */
-    private var visibleNbRows: Double = 0.toDouble()
+    /** Number of rows that are visible in the viewport  */
+    private var visibleRows: Double = 0.toDouble()
 
     /** Model for the vertical scroll bar  */
-    private var brm: BoundedRangeModel? = null
+    private var boundedRangeModel: BoundedRangeModel? = null
 
-    private val nbCols = 3
-    private val nbRows: Int
+    private val columns = 3
+    private val rows: Int
 
     /**
      * Create the panel.
      */
     init {
-        images = ImageLoader().loadImagesFromFolder(System.getProperty("user.dir") + "/Tiles").toTypedArray()
+        images = ImageLoader().getAllImagesFromFolder(System.getProperty("user.dir") + "/Tiles").toTypedArray()
         icons = arrayOfNulls<JLabel>(images.size)
-        nbRows = Math.ceil(1.0 * images.size / nbCols).toInt()
+        rows = Math.ceil(1.0 * images.size / columns).toInt()
         border = EmptyBorder(5, 5, 5, 5)
-        layout = GridLayout(nbRows, nbCols + 1, SPACEING, SPACEING)
+
+        layout = GridLayout(rows, columns + 1, SPACEING, SPACEING)
         for (i in images.indices) {
             if (i % 3 == 0) {
                 add(JLabel((i / 3).toString()))
             }
-            icons[i] = JLabel(ImageIcon(images[i]))
+            var imageIcon = ImageIcon(images[i]) // load the image to a imageIcon
+            val image = imageIcon.image // transform it
+            val newimg = image.getScaledInstance(120, 120, java.awt.Image.SCALE_SMOOTH) // scale it the smooth way
+            imageIcon = ImageIcon(newimg)  // transform it back
+
+            icons[i] = JLabel(imageIcon)
             add(icons[i])
         }
     }
@@ -56,14 +55,14 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
      * @see AdjustmentListener.adjustmentValueChanged
      */
     override fun adjustmentValueChanged(e: AdjustmentEvent) {
-        updateView()
+//        updateView()
     }
 
     /**
      * Make sure that everything that is visible is loaded
      */
     private fun updateView() {
-        val percentage = 100.0 * brm!!.value / (brm!!.maximum - brm!!.extent)
+        val percentage = 100.0 * boundedRangeModel!!.value / (boundedRangeModel!!.maximum - boundedRangeModel!!.extent)
         val firstRow = computeFirstRowIndex(percentage / 100)
         val lastRow = computeLastRowIndex(percentage / 100)
         updateImages(firstRow, lastRow)
@@ -76,29 +75,14 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
      * @param lastRow
      */
     private fun updateImages(firstRow: Int, lastRow: Int) {
-        val firtsImageIndex = firstRow * nbCols
-        val lastImageIndex = Math.min(lastRow * nbCols + nbCols - 1, images!!.size - 1) // make sure we do not try accessing an element that is not there
+        val firtsImageIndex = firstRow * columns
+        val lastImageIndex = Math.min(lastRow * columns + columns - 1, images!!.size - 1) // make sure we do not try accessing an element that is not there
         for (i in firtsImageIndex..lastImageIndex) {
-            if (images[i] == null) {
-                val blackSquare = BufferedImage(IMAGE_DIM, IMAGE_DIM, BufferedImage.TYPE_BYTE_GRAY)
-                val g = blackSquare.graphics as Graphics2D
-                val img = BufferedImage(IMAGE_DIM, IMAGE_DIM, BufferedImage.TYPE_4BYTE_ABGR)
-                val g2d = img.graphics as Graphics2D
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON)
-                val frc = g2d.fontRenderContext
-
-                var font = g2d.font
-                font = font.deriveFont(24)
-
-                val gv = font.createGlyphVector(frc, i.toString())
-                val rect = gv.visualBounds
-                val x = ((GalleryPane.Companion.IMAGE_DIM - rect.width) / 2).toInt()
-                val y = ((GalleryPane.Companion.IMAGE_DIM - rect.height) / 2).toInt()
-                g2d.drawGlyphVector(gv, x.toFloat(), y.toFloat())
-                g.drawImage(img, 0, 0, this)
-                icons?.get(i)?.icon = ImageIcon(blackSquare)
-            }
+            var imageIcon = ImageIcon(images[i]) // load the image to a imageIcon
+            val image = imageIcon.image // transform it
+            val newimg = image.getScaledInstance(120, 120, java.awt.Image.SCALE_SMOOTH) // scale it the smooth way
+            imageIcon = ImageIcon(newimg)  // transform it back
+            icons?.get(i)?.icon = imageIcon
         }
     }
 
@@ -110,8 +94,8 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
      */
     private fun computeLastRowIndex(percentage: Double): Int {
         val pos = computeTopPosition(percentage)
-        val result = Math.floor((pos - GalleryPane.Companion.SPACEING) / (GalleryPane.Companion.SPACEING + GalleryPane.Companion.IMAGE_DIM) + visibleNbRows).toInt()
-        return Math.min(result, nbRows)
+        val result = Math.floor((pos - GalleryPane.Companion.SPACEING) / (GalleryPane.Companion.SPACEING + GalleryPane.Companion.IMAGE_DIM) + visibleRows).toInt()
+        return Math.min(result, rows)
     }
 
     /**
@@ -145,7 +129,7 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
     }
 
     fun setBrm(brm: BoundedRangeModel) {
-        this.brm = brm
+        this.boundedRangeModel = brm
     }
 
     /**
@@ -169,7 +153,7 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
      */
     override fun componentResized(e: ComponentEvent) {
         val rowHeigth = GalleryPane.Companion.SPACEING + GalleryPane.Companion.IMAGE_DIM
-        visibleNbRows = 1.0 * parent.bounds.height / rowHeigth
+        visibleRows = 1.0 * parent.bounds.height / rowHeigth
         updateView() // make sure the view is properly updated
     }
 

@@ -15,4 +15,11 @@ class ImageLoader {
                 .toList()
                 .map { loadImage(it.absolutePath) }
     }
+
+    fun getAllImagesFromFolder(folderPath: String): List<String> {
+        return (File(folderPath).listFiles() ?: emptyArray())
+                .take(200)
+                .toList()
+                .map { it.absolutePath }
+    }
 }
