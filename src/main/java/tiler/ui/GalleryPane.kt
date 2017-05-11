@@ -6,7 +6,10 @@ import java.awt.event.AdjustmentEvent
 import java.awt.event.AdjustmentListener
 import java.awt.event.ComponentEvent
 import java.awt.event.ComponentListener
-import javax.swing.*
+import javax.swing.BoundedRangeModel
+import javax.swing.ImageIcon
+import javax.swing.JLabel
+import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
 /**
@@ -17,6 +20,7 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
 
     private val images: Array<String>?
     private val icons: Array<JLabel?>?
+    private val names: Array<String>?
     /** Number of rows that are visible in the viewport  */
     private var visibleRows: Double = 0.toDouble()
 
@@ -30,12 +34,21 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
      * Create the panel.
      */
     init {
-        images = ImageLoader().getAllImagesFromFolder(System.getProperty("user.dir") + "/Tiles").toTypedArray()
+        val allImageFilesFromFolder = ImageLoader()
+                .getAllImageFilesFromFolder(System.getProperty("user.dir") + "/Tiles")
+
+        names = allImageFilesFromFolder
+                .map { it.nameWithoutExtension }
+                .toTypedArray()
+        images = allImageFilesFromFolder
+                .map { it.absolutePath }
+                .toTypedArray()
         icons = arrayOfNulls<JLabel>(images.size)
         rows = Math.ceil(1.0 * images.size / columns).toInt()
         border = EmptyBorder(5, 5, 5, 5)
 
         layout = GridLayout(rows, columns + 1, SPACEING, SPACEING)
+
         for (i in images.indices) {
             if (i % 3 == 0) {
                 add(JLabel((i / 3).toString()))
@@ -45,7 +58,10 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
             val newimg = image.getScaledInstance(120, 120, java.awt.Image.SCALE_SMOOTH) // scale it the smooth way
             imageIcon = ImageIcon(newimg)  // transform it back
 
-            icons[i] = JLabel(imageIcon)
+            val jLabel = JLabel(names[i], imageIcon, JLabel.CENTER)
+            jLabel.verticalTextPosition = JLabel.BOTTOM
+            jLabel.horizontalTextPosition = JLabel.CENTER
+            icons[i] = jLabel
             add(icons[i])
         }
     }
@@ -75,10 +91,10 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
      * @param lastRow
      */
     private fun updateImages(firstRow: Int, lastRow: Int) {
-        val firtsImageIndex = firstRow * columns
+        val firstImageIndex = firstRow * columns
         val lastImageIndex = Math.min(lastRow * columns + columns - 1, images!!.size - 1) // make sure we do not try accessing an element that is not there
-        for (i in firtsImageIndex..lastImageIndex) {
-            var imageIcon = ImageIcon(images[i]) // load the image to a imageIcon
+        for (i in firstImageIndex..lastImageIndex) {
+            var imageIcon = ImageIcon(images[i]) // load the image to imageIcon
             val image = imageIcon.image // transform it
             val newimg = image.getScaledInstance(120, 120, java.awt.Image.SCALE_SMOOTH) // scale it the smooth way
             imageIcon = ImageIcon(newimg)  // transform it back
@@ -94,7 +110,8 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
      */
     private fun computeLastRowIndex(percentage: Double): Int {
         val pos = computeTopPosition(percentage)
-        val result = Math.floor((pos - GalleryPane.Companion.SPACEING) / (GalleryPane.Companion.SPACEING + GalleryPane.Companion.IMAGE_DIM) + visibleRows).toInt()
+        val result = Math.floor((pos - GalleryPane.Companion.SPACEING) /
+                (GalleryPane.Companion.SPACEING + GalleryPane.Companion.IMAGE_DIM) + visibleRows).toInt()
         return Math.min(result, rows)
     }
 
@@ -106,7 +123,8 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
      */
     private fun computeFirstRowIndex(percentage: Double): Int {
         val pos = computeTopPosition(percentage)
-        val result = Math.floor((pos - GalleryPane.Companion.SPACEING) / (GalleryPane.Companion.SPACEING + GalleryPane.Companion.IMAGE_DIM)).toInt()
+        val result = Math.floor((pos - GalleryPane.Companion.SPACEING) /
+                (GalleryPane.Companion.SPACEING + GalleryPane.Companion.IMAGE_DIM)).toInt()
         return Math.max(0, result)
     }
 
