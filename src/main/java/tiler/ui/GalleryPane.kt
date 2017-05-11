@@ -55,7 +55,7 @@ class GalleryPane : JPanel(), AdjustmentListener, ComponentListener {
      * @see AdjustmentListener.adjustmentValueChanged
      */
     override fun adjustmentValueChanged(e: AdjustmentEvent) {
-//        updateView()
+        //Do nothing
     }
 
     /**
