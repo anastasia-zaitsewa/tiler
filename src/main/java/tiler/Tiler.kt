@@ -16,11 +16,15 @@ class Tiler {
      * Create the frame.
      */
     init {
+        initMainFrame()
+        createComponents()
+    }
+
+    private fun initMainFrame() {
         mainFrame.defaultCloseOperation = EXIT_ON_CLOSE
         mainFrame.setBounds(100, 100, 600, 300)
         println("Frame bounds: " + mainFrame.bounds)
         println("Frame insets: " + mainFrame.insets)
-        createComponents()
     }
 
     private fun createComponents() {
