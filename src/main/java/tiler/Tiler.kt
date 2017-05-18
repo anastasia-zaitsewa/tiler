@@ -30,8 +30,6 @@ class Tiler {
     }
 
     private fun createComponents() {
-        mainFrame.addComponentListener(tileGalleryViewImpl) // resize listener to the frame
-
         val scrollPane = JScrollPane(tileGalleryViewImpl)
         scrollPane.verticalScrollBar.unitIncrement = 16
         val verticalScrollBar = scrollPane.verticalScrollBar
