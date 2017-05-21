@@ -5,9 +5,14 @@ import tiler.model.FileSourceImage
 import tiler.model.Tile
 import java.io.File
 
-class GetAllTilesFromFolderUC() {
-
-    fun get(path: String): Observable<List<Tile>> {
+/**
+ * Provides all {@link Tile}s from given folder
+ */
+class GetTilesFromFolderUC {
+    /**
+     * Provides all {@link Tile}s from given folder
+     */
+    fun getAll(path: String): Observable<List<Tile>> {
         return Observable.fromCallable {
             (File(path).listFiles() ?: emptyArray())
                 .toList()

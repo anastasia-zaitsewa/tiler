@@ -10,10 +10,6 @@ import javax.swing.JLabel.BOTTOM
 import javax.swing.JLabel.CENTER
 import javax.swing.JPanel
 
-/**
- * Gallery panel that only updates images when they become visible in the scrollable pane, which is the parent of this
- * panel.
- */
 class TileGalleryViewImpl : JPanel(), TileGalleryView {
 
     private val SPACING = 5

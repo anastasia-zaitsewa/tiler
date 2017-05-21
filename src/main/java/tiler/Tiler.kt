@@ -1,6 +1,6 @@
 package tiler
 
-import tiler.interactor.getters.GetAllTilesFromFolderUC
+import tiler.interactor.getters.GetTilesFromFolderUC
 import tiler.ui.gallery.TileGalleryPresenter
 import tiler.ui.gallery.TileGalleryViewImpl
 import java.awt.EventQueue
@@ -50,7 +50,7 @@ class Tiler {
                 try {
                     val tiler = Tiler()
                     tiler.mainFrame.isVisible = true
-                    TileGalleryPresenter(GetAllTilesFromFolderUC())
+                    TileGalleryPresenter(GetTilesFromFolderUC())
                             .start(tiler.tileGalleryViewImpl)
                 } catch (e: Exception) {
                     e.printStackTrace()
