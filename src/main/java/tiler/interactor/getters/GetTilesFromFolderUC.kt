@@ -8,11 +8,11 @@ import java.io.File
 /**
  * Provides all {@link Tile}s from given folder
  */
-class GetTilesFromFolderUC {
+open class GetTilesFromFolderUC {
     /**
      * Provides all {@link Tile}s from given folder
      */
-    fun getAll(path: String): Observable<List<Tile>> {
+    open fun getAll(path: String): Observable<List<Tile>> {
         return Observable.fromCallable {
             (File(path).listFiles() ?: emptyArray())
                 .toList()
