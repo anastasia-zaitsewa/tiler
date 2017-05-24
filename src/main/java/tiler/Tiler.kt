@@ -13,7 +13,7 @@ import javax.swing.JScrollPane
 class Tiler {
 
     private val mainFrame: JFrame = JFrame()
-    private val tileGalleryViewImpl: TileGalleryViewImpl = TileGalleryViewImpl()
+    private val tileGalleryViewImpl: TileGalleryViewImpl = TileGalleryViewImpl(mainFrame)
 
     /**
      * Create the frame.
@@ -37,8 +37,9 @@ class Tiler {
         val brm = verticalScrollBar.model
 
         tileGalleryViewImpl.setBrm(brm)
-
+        
         mainFrame.contentPane = scrollPane
+
     }
 
     companion object {

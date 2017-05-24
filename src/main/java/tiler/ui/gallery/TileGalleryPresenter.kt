@@ -9,11 +9,13 @@ import tiler.ui.gallery.TileGalleryView.TileGalleryState
  */
 class TileGalleryPresenter(val getTilesUC: GetTilesFromFolderUC) {
 
+    private val HARDCODE_PATH_TO_TEST_TILES = System.getProperty("user.dir") + "/Tiles"
+
     fun start(view: TileGalleryView) {
-        getTilesUC.getAll(System.getProperty("user.dir") + "/Tiles")
+        getTilesUC.getAll(HARDCODE_PATH_TO_TEST_TILES)
                 .map { TileGalleryState(it) }
-                .observeOn(Schedulers.trampoline())
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.trampoline())
                 .subscribe { view.updateState(it) }
     }
 }

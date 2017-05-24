@@ -3,14 +3,11 @@ package tiler.ui.gallery
 import tiler.model.Tile
 import java.awt.GridLayout
 import java.awt.Image.SCALE_SMOOTH
-import javax.swing.BoundedRangeModel
-import javax.swing.ImageIcon
-import javax.swing.JLabel
+import javax.swing.*
 import javax.swing.JLabel.BOTTOM
 import javax.swing.JLabel.CENTER
-import javax.swing.JPanel
 
-class TileGalleryViewImpl : JPanel(), TileGalleryView {
+class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
 
     private val SPACING = 5
     private val TILE_SIZE = 120
@@ -52,6 +49,8 @@ class TileGalleryViewImpl : JPanel(), TileGalleryView {
 
             add(jLabel)
         }
+
+        mainFrame.isVisible = true
     }
 
     fun setBrm(brm: BoundedRangeModel) {
