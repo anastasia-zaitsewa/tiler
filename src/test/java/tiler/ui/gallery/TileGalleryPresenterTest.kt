@@ -25,6 +25,7 @@ class TileGalleryPresenterTest {
 
     @Test
     fun start() {
+        // Given
         val expected = listOf(
                 Tile(sourceImage, "tile1"),
                 Tile(sourceImage, "tile2")
@@ -32,8 +33,10 @@ class TileGalleryPresenterTest {
         given(getTilesFromFolderUC.getAll(anyString()))
                 .willReturn(just(expected))
 
+        // When
         presenter.start(view)
 
+        // Then
         verify(view).updateState(TileGalleryView.TileGalleryState(expected))
     }
 }

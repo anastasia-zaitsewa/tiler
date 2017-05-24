@@ -3,6 +3,7 @@ package tiler
 import tiler.interactor.getters.GetTilesFromFolderUC
 import tiler.ui.gallery.TileGalleryPresenter
 import tiler.ui.gallery.TileGalleryViewImpl
+import tiler.repository.JavaFileRepository
 import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.JFrame.EXIT_ON_CLOSE
@@ -50,7 +51,7 @@ class Tiler {
                 try {
                     val tiler = Tiler()
                     tiler.mainFrame.isVisible = true
-                    TileGalleryPresenter(GetTilesFromFolderUC())
+                    TileGalleryPresenter(GetTilesFromFolderUC(JavaFileRepository()))
                             .start(tiler.tileGalleryViewImpl)
                 } catch (e: Exception) {
                     e.printStackTrace()
