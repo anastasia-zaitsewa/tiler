@@ -1,0 +1,13 @@
+package tiler.repository
+
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import java.io.File
+
+class JavaFileRepository : FileRepository {
+    override fun listFiles(path: String): Single<List<File>> {
+        return Single.fromCallable {
+            File(path).listFiles().toList()
+        }.subscribeOn(Schedulers.io())
+    }
+}
