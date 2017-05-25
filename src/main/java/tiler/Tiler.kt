@@ -1,12 +1,15 @@
 package tiler
 
 import tiler.interactor.getters.GetTilesFromFolderUC
+import tiler.repository.JavaFileRepository
 import tiler.ui.gallery.TileGalleryPresenter
 import tiler.ui.gallery.TileGalleryViewImpl
-import tiler.repository.JavaFileRepository
+import java.awt.BorderLayout
+import java.awt.BorderLayout.*
 import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.JFrame.EXIT_ON_CLOSE
+import javax.swing.JPanel
 import javax.swing.JScrollPane
 
 
@@ -20,12 +23,20 @@ class Tiler {
      */
     init {
         initMainFrame()
+        initContainer()
         createComponents()
     }
 
+    private fun initContainer() {
+    }
+
     private fun initMainFrame() {
-        mainFrame.defaultCloseOperation = EXIT_ON_CLOSE
-        mainFrame.setBounds(100, 100, 600, 300)
+        with(mainFrame) {
+            defaultCloseOperation = EXIT_ON_CLOSE
+            setBounds(100, 100, 800, 300)
+            layout = BorderLayout()
+        }
+
         println("Frame bounds: " + mainFrame.bounds)
         println("Frame insets: " + mainFrame.insets)
     }
@@ -37,9 +48,9 @@ class Tiler {
         val brm = verticalScrollBar.model
 
         tileGalleryViewImpl.setBrm(brm)
-        
-        mainFrame.contentPane = scrollPane
 
+        mainFrame.add(scrollPane, LINE_START)
+        mainFrame.add(JPanel(), CENTER)
     }
 
     companion object {
