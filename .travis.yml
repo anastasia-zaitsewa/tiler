@@ -1,7 +1,8 @@
 language: java
 
-./gradlew assemble
-./gradlew check
+script:
+- ./gradlew assemble
+- ./gradlew check
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
