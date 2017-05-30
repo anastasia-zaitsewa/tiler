@@ -50,6 +50,6 @@ class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
             add(jLabel)
         }
 
-        mainFrame.isVisible = true
+        mainFrame.pack()
     }
 }

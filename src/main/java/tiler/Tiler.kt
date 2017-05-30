@@ -23,17 +23,13 @@ class Tiler {
      */
     init {
         initMainFrame()
-        initContainer()
         createComponents()
-    }
-
-    private fun initContainer() {
     }
 
     private fun initMainFrame() {
         with(mainFrame) {
             defaultCloseOperation = EXIT_ON_CLOSE
-            setBounds(100, 100, 800, 300)
+            setBounds(100, 100, 800, 600)
             layout = BorderLayout()
         }
 
@@ -42,13 +38,18 @@ class Tiler {
     }
 
     private fun createComponents() {
-        val scrollPane = JScrollPane(tileGalleryViewImpl)
-        scrollPane.verticalScrollBar.unitIncrement = 16
+        val galleryScrollPane = JScrollPane(tileGalleryViewImpl)
+        galleryScrollPane.verticalScrollBar.unitIncrement = 16
 
-        mainFrame.add(scrollPane, LINE_START)
+        mainFrame.add(galleryScrollPane, LINE_START)
 
-        mainFrame.add(CanvasGrid())
+        val canvasScrollPane = JScrollPane(CanvasGrid())
+
+        mainFrame.add(canvasScrollPane)
+
+        mainFrame.pack()
         mainFrame.setLocationRelativeTo(null)
+        mainFrame.isVisible = true
     }
 
     companion object {
