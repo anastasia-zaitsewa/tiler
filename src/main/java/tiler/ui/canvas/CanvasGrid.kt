@@ -7,14 +7,15 @@ import java.awt.GridBagLayout
 import javax.swing.JPanel
 import javax.swing.border.MatteBorder
 
-
+/**
+ * Draws grid for canvas
+ */
 class CanvasGrid : JPanel() {
 
     val HARD_CODE_GRID_SIZE = 10
 
     init {
         layout = GridBagLayout()
-        background = Color.DARK_GRAY
 
         for (row in 0 until HARD_CODE_GRID_SIZE) {
             for (col in 0 until HARD_CODE_GRID_SIZE) {
@@ -30,6 +31,7 @@ class CanvasGrid : JPanel() {
                 with(cell) {
                     border = createProperBorder(row, col)
                 }
+                
                 add(cell, gridBagConstraints)
             }
         }
