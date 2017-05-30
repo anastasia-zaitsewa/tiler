@@ -18,9 +18,6 @@ class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
 
     var tiles: List<Tile> = emptyList()
 
-    /** Model for the vertical scroll bar  */
-    private var boundedRangeModel: BoundedRangeModel? = null
-
     private var rows: Int = 0
 
     override fun updateState(state: TileGalleryView.TileGalleryState) {
@@ -54,9 +51,5 @@ class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
         }
 
         mainFrame.isVisible = true
-    }
-
-    fun setBrm(brm: BoundedRangeModel) {
-        this.boundedRangeModel = brm
     }
 }

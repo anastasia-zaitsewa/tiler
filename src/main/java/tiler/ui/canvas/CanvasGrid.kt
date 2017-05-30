@@ -4,7 +4,6 @@ import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import java.lang.Math.random
 import javax.swing.JPanel
 import javax.swing.border.MatteBorder
 

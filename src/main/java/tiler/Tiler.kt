@@ -44,10 +44,6 @@ class Tiler {
     private fun createComponents() {
         val scrollPane = JScrollPane(tileGalleryViewImpl)
         scrollPane.verticalScrollBar.unitIncrement = 16
-        val verticalScrollBar = scrollPane.verticalScrollBar
-        val brm = verticalScrollBar.model
-
-        tileGalleryViewImpl.setBrm(brm)
 
         mainFrame.add(scrollPane, LINE_START)
 
