@@ -1,9 +1,12 @@
 package tiler
 
 import tiler.interactor.getters.GetTilesFromFolderUC
+import tiler.repository.JavaFileRepository
+import tiler.ui.canvas.CanvasGrid
 import tiler.ui.gallery.TileGalleryPresenter
 import tiler.ui.gallery.TileGalleryViewImpl
-import tiler.repository.JavaFileRepository
+import java.awt.BorderLayout
+import java.awt.BorderLayout.LINE_START
 import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.JFrame.EXIT_ON_CLOSE
@@ -24,22 +27,29 @@ class Tiler {
     }
 
     private fun initMainFrame() {
-        mainFrame.defaultCloseOperation = EXIT_ON_CLOSE
-        mainFrame.setBounds(100, 100, 600, 300)
+        with(mainFrame) {
+            defaultCloseOperation = EXIT_ON_CLOSE
+            setBounds(100, 100, 800, 600)
+            layout = BorderLayout()
+        }
+
         println("Frame bounds: " + mainFrame.bounds)
         println("Frame insets: " + mainFrame.insets)
     }
 
     private fun createComponents() {
-        val scrollPane = JScrollPane(tileGalleryViewImpl)
-        scrollPane.verticalScrollBar.unitIncrement = 16
-        val verticalScrollBar = scrollPane.verticalScrollBar
-        val brm = verticalScrollBar.model
+        val galleryScrollPane = JScrollPane(tileGalleryViewImpl)
+        galleryScrollPane.verticalScrollBar.unitIncrement = 16
 
-        tileGalleryViewImpl.setBrm(brm)
-        
-        mainFrame.contentPane = scrollPane
+        mainFrame.add(galleryScrollPane, LINE_START)
 
+        val canvasScrollPane = JScrollPane(CanvasGrid())
+
+        mainFrame.add(canvasScrollPane)
+
+        mainFrame.pack()
+        mainFrame.setLocationRelativeTo(null)
+        mainFrame.isVisible = true
     }
 
     companion object {

@@ -7,6 +7,9 @@ import javax.swing.*
 import javax.swing.JLabel.BOTTOM
 import javax.swing.JLabel.CENTER
 
+/**
+ * Swing implementation - shows tile gallery.
+ */
 class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
 
     private val SPACING = 5
@@ -14,9 +17,6 @@ class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
     private val COLUMNS = 2
 
     var tiles: List<Tile> = emptyList()
-
-    /** Model for the vertical scroll bar  */
-    private var boundedRangeModel: BoundedRangeModel? = null
 
     private var rows: Int = 0
 
@@ -50,10 +50,6 @@ class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
             add(jLabel)
         }
 
-        mainFrame.isVisible = true
-    }
-
-    fun setBrm(brm: BoundedRangeModel) {
-        this.boundedRangeModel = brm
+        mainFrame.pack()
     }
 }
