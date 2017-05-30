@@ -7,6 +7,9 @@ import javax.swing.*
 import javax.swing.JLabel.BOTTOM
 import javax.swing.JLabel.CENTER
 
+/**
+ * Swing implementation - shows tile gallery.
+ */
 class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
 
     private val SPACING = 5

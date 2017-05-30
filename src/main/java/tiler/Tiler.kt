@@ -2,14 +2,14 @@ package tiler
 
 import tiler.interactor.getters.GetTilesFromFolderUC
 import tiler.repository.JavaFileRepository
+import tiler.ui.canvas.CanvasGrid
 import tiler.ui.gallery.TileGalleryPresenter
 import tiler.ui.gallery.TileGalleryViewImpl
 import java.awt.BorderLayout
-import java.awt.BorderLayout.*
+import java.awt.BorderLayout.LINE_START
 import java.awt.EventQueue
 import javax.swing.JFrame
 import javax.swing.JFrame.EXIT_ON_CLOSE
-import javax.swing.JPanel
 import javax.swing.JScrollPane
 
 
@@ -50,7 +50,9 @@ class Tiler {
         tileGalleryViewImpl.setBrm(brm)
 
         mainFrame.add(scrollPane, LINE_START)
-        mainFrame.add(JPanel(), CENTER)
+
+        mainFrame.add(CanvasGrid())
+        mainFrame.setLocationRelativeTo(null)
     }
 
     companion object {
