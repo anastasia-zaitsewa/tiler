@@ -1,11 +1,9 @@
 package tiler.ui.canvas
 
-import java.awt.Color
-import java.awt.Dimension
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
+import java.awt.*
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.JPanel
-import javax.swing.border.MatteBorder
 
 /**
  * Draws grid for canvas
@@ -13,58 +11,101 @@ import javax.swing.border.MatteBorder
 class CanvasGrid : JPanel() {
 
     val HARD_CODE_GRID_SIZE = 10
+    val HARD_CODE_CELL_SIZE = 50
+
+    val cells = ArrayList<Rectangle>(HARD_CODE_GRID_SIZE * HARD_CODE_GRID_SIZE)
+    var selectedCell: Point? = null
 
     init {
-        layout = GridBagLayout()
+        addMouseMotionListener(CellMouseAdapter())
+    }
 
+    override fun invalidate() {
+        cells.clear()
+        selectedCell = null
+        super.invalidate()
+    }
+
+    override fun paintComponent(g: Graphics?) {
+        super.paintComponent(g)
+
+        val graphics = g?.create() as Graphics2D
+
+        val xOffset = (width - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
+        val yOffset = (height - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
+
+        if (cells.isEmpty()) {
+            calculateGrid(xOffset, yOffset)
+        }
+
+        paintSelectedCell(graphics)
+
+        with(graphics) {
+            color = Color.GRAY
+
+            for (cell in cells) {
+                draw(cell)
+            }
+
+            dispose()
+        }
+
+    }
+
+    override fun getPreferredSize(): Dimension {
+        return Dimension(HARD_CODE_CELL_SIZE * HARD_CODE_GRID_SIZE, HARD_CODE_CELL_SIZE * HARD_CODE_GRID_SIZE)
+    }
+
+
+    private fun paintSelectedCell(graphics: Graphics2D) {
+        selectedCell?.let {
+            with(it) {
+                val cell = cells[x + (y * HARD_CODE_GRID_SIZE)]
+
+                with(graphics) {
+                    color = (Color.CYAN)
+                    fill(cell)
+                }
+            }
+        }
+    }
+
+    private fun calculateGrid(xOffset: Int, yOffset: Int) {
         for (row in 0 until HARD_CODE_GRID_SIZE) {
             for (col in 0 until HARD_CODE_GRID_SIZE) {
-
-                val gridBagConstraints = GridBagConstraints()
-
-                with(gridBagConstraints) {
-                    gridx = col
-                    gridy = row
-                }
-
-                val cell = GridCell()
-                with(cell) {
-                    border = createProperBorder(row, col)
-                }
-                
-                add(cell, gridBagConstraints)
+                cells.add(
+                        Rectangle(
+                                xOffset + (col * HARD_CODE_CELL_SIZE),
+                                yOffset + (row * HARD_CODE_CELL_SIZE),
+                                HARD_CODE_CELL_SIZE,
+                                HARD_CODE_CELL_SIZE
+                        )
+                )
             }
         }
     }
 
-    private fun createProperBorder(row: Int, col: Int): MatteBorder {
-        if (notRightOrBottomEdge(row)) {
-            if (notRightOrBottomEdge(col)) {
-                return MatteBorder(1, 1, 0, 0, Color.GRAY)
-            } else {
-                return MatteBorder(1, 1, 0, 1, Color.GRAY)
+    private inner class CellMouseAdapter : MouseAdapter() {
+        override fun mouseMoved(e: MouseEvent?) {
+
+            if (e == null) {
+                return
             }
-        } else {
-            if (notRightOrBottomEdge(col)) {
-                return MatteBorder(1, 1, 1, 0, Color.GRAY)
-            } else {
-                return MatteBorder(1, 1, 1, 1, Color.GRAY)
+
+            val xOffset = (width - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
+            val yOffset = (height - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
+
+            if (e.x >= xOffset && e.y >= yOffset) {
+                val column = (e.x - xOffset) / HARD_CODE_CELL_SIZE
+                val row = (e.y - yOffset) / HARD_CODE_CELL_SIZE
+
+                if (column in 0 until HARD_CODE_GRID_SIZE
+                        && row in 0 until HARD_CODE_GRID_SIZE) {
+                    selectedCell = Point(column, row)
+                }
             }
-        }
-    }
 
-    private fun notRightOrBottomEdge(index: Int) = index < HARD_CODE_GRID_SIZE - 1
-
-    class GridCell : JPanel() {
-
-        val HARD_CODE_CELL_SIZE = 50
-
-        override fun getPreferredSize(): Dimension {
-            return Dimension(HARD_CODE_CELL_SIZE, HARD_CODE_CELL_SIZE)
-        }
-
-        override fun getMinimumSize(): Dimension {
-            return Dimension(HARD_CODE_CELL_SIZE, HARD_CODE_CELL_SIZE)
+            repaint()
         }
     }
 }
