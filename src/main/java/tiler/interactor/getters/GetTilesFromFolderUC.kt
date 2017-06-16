@@ -1,6 +1,7 @@
 package tiler.interactor.getters
 
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import tiler.model.FileSourceImage
 import tiler.model.Tile
 import tiler.repository.FileRepository
@@ -23,5 +24,6 @@ open class GetTilesFromFolderUC(
                     }
                 }
                 .toObservable()
+                .observeOn(Schedulers.io())
     }
 }

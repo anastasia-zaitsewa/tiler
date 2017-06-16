@@ -1,6 +1,7 @@
 package tiler.ui.gallery
 
-import io.reactivex.schedulers.Schedulers
+import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import tiler.interactor.getters.GetTilesFromFolderUC
 import tiler.ui.gallery.TileGalleryView.TileGalleryState
 
@@ -14,8 +15,7 @@ class TileGalleryPresenter(val getTilesUC: GetTilesFromFolderUC) {
     fun start(view: TileGalleryView) {
         getTilesUC.getAll(HARDCODE_PATH_TO_TEST_TILES)
                 .map { TileGalleryState(it) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.trampoline())
+                .observeOnFx()
                 .subscribe { view.updateState(it) }
     }
 }
