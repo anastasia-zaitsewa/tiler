@@ -2,25 +2,34 @@ package tiler;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import tiler.interactor.getters.GetTilesFromFolderUC;
+import tiler.repository.JavaFileRepository;
+import tiler.ui.gallery.TileGalleryPresenter;
+import tiler.ui.gallery.TileGalleryViewImpl;
 
 public class Tiler extends Application {
+
+    TileGalleryViewImpl tileGalleryView = new TileGalleryViewImpl();
+
     @Override
     public void start(Stage primaryStage) {
-        Button button = new Button();
-        button.setText("Test");
-        button.setOnAction(event -> System.out.println("test"));
+        VBox root = new VBox();
 
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToHeight(true);
+        scrollPane.setContent(tileGalleryView);
 
-        StackPane root = new StackPane();
+        root.getChildren().add(scrollPane);
 
-        root.getChildren().add(button);
+        new TileGalleryPresenter(new GetTilesFromFolderUC(new JavaFileRepository()))
+                .start(tileGalleryView);
 
-        Scene scene = new Scene(root, 300.0, 250.0);
+        Scene scene = new Scene(root, 800.0, 400.0);
 
-        primaryStage.setTitle("test");
+        primaryStage.setTitle("TileGallery");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

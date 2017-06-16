@@ -1,16 +1,23 @@
 package tiler.ui.gallery
 
+import javafx.geometry.Insets
+import javafx.geometry.Pos
+import javafx.scene.control.ContentDisplay
+import javafx.scene.control.Label
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
+import javafx.scene.layout.Background
+import javafx.scene.layout.BackgroundFill
+import javafx.scene.layout.CornerRadii
+import javafx.scene.layout.TilePane
+import javafx.scene.paint.Color
+import tiler.model.FileSourceImage
 import tiler.model.Tile
-import java.awt.GridLayout
-import java.awt.Image.SCALE_SMOOTH
-import javax.swing.*
-import javax.swing.JLabel.BOTTOM
-import javax.swing.JLabel.CENTER
 
 /**
  * Swing implementation - shows tile gallery.
  */
-class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
+class TileGalleryViewImpl : TileGalleryView, TilePane() {
 
     private val SPACING = 5
     private val TILE_SIZE = 120
@@ -18,38 +25,41 @@ class TileGalleryViewImpl(val mainFrame: JFrame) : JPanel(), TileGalleryView {
 
     var tiles: List<Tile> = emptyList()
 
-    private var rows: Int = 0
+
+    init {
+        prefColumns = COLUMNS
+        prefTileWidth = TILE_SIZE.toDouble()
+        hgap = SPACING.toDouble()
+        vgap = SPACING.toDouble()
+        tileAlignment = Pos.CENTER
+        background = Background(BackgroundFill(Color.ALICEBLUE, CornerRadii.EMPTY, Insets.EMPTY))
+    }
 
     override fun updateState(state: TileGalleryView.TileGalleryState) {
         tiles = state.tiles
-
-        calculateGrid()
         drawTiles()
-    }
-
-    private fun calculateGrid() {
-        rows = Math.ceil(tiles.size.toDouble() / COLUMNS).toInt()
-        layout = GridLayout(rows, COLUMNS, SPACING, SPACING)
     }
 
     private fun drawTiles() {
         for ((sourceImage, name) in tiles) {
-
-            val imageIcon = ImageIcon(sourceImage
-                    .get()
-                    .image
-                    .getScaledInstance(TILE_SIZE, TILE_SIZE, SCALE_SMOOTH)
+            val element = Label(
+                    name,
+                    ImageView(
+                            Image(
+                                    (sourceImage as FileSourceImage).sourcePath,
+                                    Math.ceil(TILE_SIZE * 0.8),
+                                    Math.ceil(TILE_SIZE * 0.8),
+                                    true,
+                                    true,
+                                    true
+                            )
+                    )
             )
 
-            val jLabel = JLabel(name, imageIcon, CENTER)
-            with(jLabel) {
-                verticalTextPosition = BOTTOM
-                horizontalTextPosition = CENTER
-            }
+            element.isWrapText = true
+            element.contentDisplay = ContentDisplay.TOP
 
-            add(jLabel)
+            children.add(element)
         }
-
-        mainFrame.pack()
     }
 }

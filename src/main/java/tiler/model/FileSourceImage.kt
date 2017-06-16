@@ -1,15 +1,21 @@
 package tiler.model
 
-import javax.swing.ImageIcon
+import javafx.scene.image.Image
+import java.io.File
 
 /**
  * Represents image source for {@link Tile}
  */
 data class FileSourceImage(val path: String) : SourceImage {
 
-    val image: ImageIcon = ImageIcon(path)
+    val get: Image = Image(
+            File(path).toURI().toURL().toString(),
+            true
+    )
 
-    override fun get(): ImageIcon {
-        return image
+    val sourcePath: String = File(path).toURI().toURL().toString()
+
+    override fun get(): Image {
+        return get
     }
 }
