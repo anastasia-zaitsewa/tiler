@@ -2,7 +2,6 @@ package tiler.interactor.getters
 
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.anyString
@@ -10,7 +9,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import tiler.model.FileSourceImage
+import tiler.model.FileSourceImageUrl
 import tiler.model.Tile
 import tiler.repository.FileRepository
 import java.io.File
@@ -33,8 +32,8 @@ class GetTilesFromFolderUCTest {
         )
 
         val expected = listOf(
-                Tile(FileSourceImage("path/name1"), "name1"),
-                Tile(FileSourceImage("path/name2"), "name2")
+                Tile(FileSourceImageUrl("path/name1"), "name1"),
+                Tile(FileSourceImageUrl("path/name2"), "name2")
 
         )
 

@@ -11,7 +11,7 @@ import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.TilePane
 import javafx.scene.paint.Color
-import tiler.model.FileSourceImage
+import tiler.model.FileSourceImageUrl
 import tiler.model.Tile
 
 /**
@@ -41,12 +41,12 @@ class TileGalleryViewImpl : TileGalleryView, TilePane() {
     }
 
     private fun drawTiles() {
-        for ((sourceImage, name) in tiles) {
+        for ((sourceImageUrl, name) in tiles) {
             val element = Label(
                     name,
                     ImageView(
                             Image(
-                                    (sourceImage as FileSourceImage).sourcePath,
+                                    sourceImageUrl.get(),
                                     Math.ceil(TILE_SIZE * 0.8),
                                     Math.ceil(TILE_SIZE * 0.8),
                                     true,

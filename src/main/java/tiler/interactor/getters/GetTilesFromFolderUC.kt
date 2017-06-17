@@ -2,7 +2,7 @@ package tiler.interactor.getters
 
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import tiler.model.FileSourceImage
+import tiler.model.FileSourceImageUrl
 import tiler.model.Tile
 import tiler.repository.FileRepository
 
@@ -20,7 +20,7 @@ open class GetTilesFromFolderUC(
         return fileRepository
                 .listFiles(path)
                 .map { it.map {
-                        Tile(FileSourceImage(it.path), it.nameWithoutExtension)
+                        Tile(FileSourceImageUrl(it.path), it.nameWithoutExtension)
                     }
                 }
                 .toObservable()

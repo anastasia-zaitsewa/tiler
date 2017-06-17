@@ -8,7 +8,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import tiler.interactor.getters.GetTilesFromFolderUC
-import tiler.model.SourceImage
+import tiler.model.SourceImageUrl
 import tiler.model.Tile
 
 @RunWith(MockitoJUnitRunner::class)
@@ -17,7 +17,7 @@ class TileGalleryPresenterTest {
     @Mock
     lateinit var getTilesFromFolderUC: GetTilesFromFolderUC
     @Mock
-    lateinit var sourceImage: SourceImage
+    lateinit var sourceImageUrl: SourceImageUrl
     @Mock
     lateinit var view: TileGalleryView
     @InjectMocks
@@ -27,8 +27,8 @@ class TileGalleryPresenterTest {
     fun start() {
         // Given
         val expected = listOf(
-                Tile(sourceImage, "tile1"),
-                Tile(sourceImage, "tile2")
+                Tile(sourceImageUrl, "tile1"),
+                Tile(sourceImageUrl, "tile2")
         )
         given(getTilesFromFolderUC.getAll(anyString()))
                 .willReturn(just(expected))
