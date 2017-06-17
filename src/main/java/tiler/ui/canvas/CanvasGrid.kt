@@ -13,62 +13,57 @@ import javafx.scene.shape.Rectangle
 class CanvasGrid : Canvas() {
 
     val HARD_CODE_GRID_SIZE = 10
-    val HARD_CODE_CELL_SIZE = 50
+    val HARD_CODE_CELL_SIZE = 50.0
+
+    val gc = graphicsContext2D
 
     val cells = ArrayList<Rectangle>(HARD_CODE_GRID_SIZE * HARD_CODE_GRID_SIZE)
-    var selectedCell: Dimension2D? = null
+    var selectedCellCoordinates: Dimension2D? = null
 
     init {
         height = (HARD_CODE_CELL_SIZE * HARD_CODE_GRID_SIZE).toDouble()
         width = (HARD_CODE_CELL_SIZE * HARD_CODE_GRID_SIZE).toDouble()
         onMouseMoved = CellMouseAdapter()
+        onMouseExited = EventHandler<MouseEvent> {
+            _ ->  clearSelectedCell()
+        }
+
         paintComponent()
     }
 
 
-//    override fun invalidate() {
-//        cells.clear()
-//        selectedCell = null
-//        super.invalidate()
-//    }
-
     fun paintComponent() {
 
-        val xOffset = (width - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
-        val yOffset = (height - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
-
         if (cells.isEmpty()) {
-            calculateGrid(xOffset, yOffset)
+            calculateGrid()
         }
 
-        paintSelectedCell()
-
-        graphicsContext2D.stroke = Color.GRAY
+        gc.stroke = Color.GRAY
         for (cell in cells) {
-            graphicsContext2D.strokeRect(cell.x, cell.y, cell.width, cell.height)
+            gc.strokeRect(cell.x, cell.y, cell.width, cell.height)
         }
     }
 
     private fun paintSelectedCell() {
-        selectedCell?.let {
+        selectedCellCoordinates?.let {
             with(it) {
                 val cell = cells[(width + (height * HARD_CODE_GRID_SIZE)).toInt()]
 
-                graphicsContext2D.fill = Color.CYAN
-                graphicsContext2D.fillRect(cell.x, cell.y, cell.width, cell.height)
+                gc.fill = Color.CYAN
+                gc.fillRect(cell.x, cell.y, cell.width, cell.height)
             }
         }
     }
 
-    private fun calculateGrid(xOffset: Double, yOffset: Double) {
+    private fun calculateGrid() {
         for (row in 0 until HARD_CODE_GRID_SIZE) {
             for (col in 0 until HARD_CODE_GRID_SIZE) {
                 cells.add(
                         Rectangle(
-                                (xOffset + (col * HARD_CODE_CELL_SIZE)),
-                                (yOffset + (row * HARD_CODE_CELL_SIZE)),
-                                HARD_CODE_CELL_SIZE.toDouble(),
-                                HARD_CODE_CELL_SIZE.toDouble()
+                                col * HARD_CODE_CELL_SIZE,
+                                row * HARD_CODE_CELL_SIZE,
+                                HARD_CODE_CELL_SIZE,
+                                HARD_CODE_CELL_SIZE
                         )
                 )
             }
@@ -81,18 +76,23 @@ class CanvasGrid : Canvas() {
                 return
             }
 
-            val xOffset = (width - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
-            val yOffset = (height - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
+            val column = Math.floor(event.x / HARD_CODE_CELL_SIZE)
+            val row = Math.floor(event.y / HARD_CODE_CELL_SIZE)
 
-            if (event.x >= xOffset && event.y >= yOffset) {
-                val column = (event.x - xOffset) / HARD_CODE_CELL_SIZE
-                val row = (event.y - yOffset) / HARD_CODE_CELL_SIZE
+            if (column in 0 until HARD_CODE_GRID_SIZE
+                    && row in 0 until HARD_CODE_GRID_SIZE)  {
 
-                if (column in 0 until HARD_CODE_GRID_SIZE
-                        && row in 0 until HARD_CODE_GRID_SIZE) {
-                    selectedCell = Dimension2D(column, row)
-                }
+                clearSelectedCell()
+                selectedCellCoordinates = Dimension2D(column, row)
+                paintSelectedCell()
             }
+        }
+    }
+
+    private fun clearSelectedCell() {
+        selectedCellCoordinates?.let {
+            val cell = cells[(it.width + (it.height * HARD_CODE_GRID_SIZE)).toInt()]
+            gc.clearRect(cell.x, cell.y, cell.width, cell.height)
         }
     }
 }
