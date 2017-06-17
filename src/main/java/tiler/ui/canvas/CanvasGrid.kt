@@ -1,35 +1,38 @@
 package tiler.ui.canvas
 
-import java.awt.*
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import javax.swing.JPanel
+import javafx.event.EventHandler
+import javafx.geometry.Dimension2D
+import javafx.scene.canvas.Canvas
+import javafx.scene.input.MouseEvent
+import javafx.scene.paint.Color
+import javafx.scene.shape.Rectangle
 
 /**
  * Draws grid for canvas
  */
-class CanvasGrid : JPanel() {
+class CanvasGrid : Canvas() {
 
     val HARD_CODE_GRID_SIZE = 10
     val HARD_CODE_CELL_SIZE = 50
 
     val cells = ArrayList<Rectangle>(HARD_CODE_GRID_SIZE * HARD_CODE_GRID_SIZE)
-    var selectedCell: Point? = null
+    var selectedCell: Dimension2D? = null
 
     init {
-        addMouseMotionListener(CellMouseAdapter())
+        height = (HARD_CODE_CELL_SIZE * HARD_CODE_GRID_SIZE).toDouble()
+        width = (HARD_CODE_CELL_SIZE * HARD_CODE_GRID_SIZE).toDouble()
+        onMouseMoved = CellMouseAdapter()
+        paintComponent()
     }
 
-    override fun invalidate() {
-        cells.clear()
-        selectedCell = null
-        super.invalidate()
-    }
 
-    override fun paintComponent(g: Graphics?) {
-        super.paintComponent(g)
+//    override fun invalidate() {
+//        cells.clear()
+//        selectedCell = null
+//        super.invalidate()
+//    }
 
-        val graphics = g?.create() as Graphics2D
+    fun paintComponent() {
 
         val xOffset = (width - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
         val yOffset = (height - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
@@ -38,74 +41,58 @@ class CanvasGrid : JPanel() {
             calculateGrid(xOffset, yOffset)
         }
 
-        paintSelectedCell(graphics)
+        paintSelectedCell()
 
-        with(graphics) {
-            color = Color.GRAY
-
-            for (cell in cells) {
-                draw(cell)
-            }
-
-            dispose()
+        graphicsContext2D.stroke = Color.GRAY
+        for (cell in cells) {
+            graphicsContext2D.strokeRect(cell.x, cell.y, cell.width, cell.height)
         }
-
     }
 
-    override fun getPreferredSize(): Dimension {
-        return Dimension(HARD_CODE_CELL_SIZE * HARD_CODE_GRID_SIZE, HARD_CODE_CELL_SIZE * HARD_CODE_GRID_SIZE)
-    }
-
-
-    private fun paintSelectedCell(graphics: Graphics2D) {
+    private fun paintSelectedCell() {
         selectedCell?.let {
             with(it) {
-                val cell = cells[x + (y * HARD_CODE_GRID_SIZE)]
+                val cell = cells[(width + (height * HARD_CODE_GRID_SIZE)).toInt()]
 
-                with(graphics) {
-                    color = (Color.CYAN)
-                    fill(cell)
-                }
+                graphicsContext2D.fill = Color.CYAN
+                graphicsContext2D.fillRect(cell.x, cell.y, cell.width, cell.height)
             }
         }
     }
 
-    private fun calculateGrid(xOffset: Int, yOffset: Int) {
+    private fun calculateGrid(xOffset: Double, yOffset: Double) {
         for (row in 0 until HARD_CODE_GRID_SIZE) {
             for (col in 0 until HARD_CODE_GRID_SIZE) {
                 cells.add(
                         Rectangle(
-                                xOffset + (col * HARD_CODE_CELL_SIZE),
-                                yOffset + (row * HARD_CODE_CELL_SIZE),
-                                HARD_CODE_CELL_SIZE,
-                                HARD_CODE_CELL_SIZE
+                                (xOffset + (col * HARD_CODE_CELL_SIZE)),
+                                (yOffset + (row * HARD_CODE_CELL_SIZE)),
+                                HARD_CODE_CELL_SIZE.toDouble(),
+                                HARD_CODE_CELL_SIZE.toDouble()
                         )
                 )
             }
         }
     }
 
-    private inner class CellMouseAdapter : MouseAdapter() {
-        override fun mouseMoved(e: MouseEvent?) {
-
-            if (e == null) {
+    private inner class CellMouseAdapter : EventHandler<MouseEvent> {
+        override fun handle(event: MouseEvent?) {
+            if (event == null) {
                 return
             }
 
             val xOffset = (width - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
             val yOffset = (height - (HARD_CODE_GRID_SIZE * HARD_CODE_CELL_SIZE)) / 2
 
-            if (e.x >= xOffset && e.y >= yOffset) {
-                val column = (e.x - xOffset) / HARD_CODE_CELL_SIZE
-                val row = (e.y - yOffset) / HARD_CODE_CELL_SIZE
+            if (event.x >= xOffset && event.y >= yOffset) {
+                val column = (event.x - xOffset) / HARD_CODE_CELL_SIZE
+                val row = (event.y - yOffset) / HARD_CODE_CELL_SIZE
 
                 if (column in 0 until HARD_CODE_GRID_SIZE
                         && row in 0 until HARD_CODE_GRID_SIZE) {
-                    selectedCell = Point(column, row)
+                    selectedCell = Dimension2D(column, row)
                 }
             }
-
-            repaint()
         }
     }
 }
