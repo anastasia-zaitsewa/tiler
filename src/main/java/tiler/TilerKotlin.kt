@@ -1,5 +1,6 @@
 package tiler
 
+import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.scene.control.ScrollPane
@@ -25,7 +26,7 @@ class TilerKotlin {
 
         val root = initRoot()
 
-        TileGalleryPresenter(GetTilesFromFolderUC(JavaFileRepository()))
+        TileGalleryPresenter(GetTilesFromFolderUC(JavaFileRepository()), JavaFxScheduler.platform())
                 .start(tileGalleryView)
 
         primaryStage.apply {

@@ -1,10 +1,11 @@
 package tiler.ui.gallery
 
 import io.reactivex.Observable.just
+import io.reactivex.schedulers.Schedulers
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.*
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import tiler.interactor.getters.GetTilesFromFolderUC
@@ -20,9 +21,16 @@ class TileGalleryPresenterTest {
     lateinit var sourceImageUrl: SourceImageUrl
     @Mock
     lateinit var view: TileGalleryView
-    @InjectMocks
-    lateinit var presenter: TileGalleryPresenter
 
+    var presenter: TileGalleryPresenter? = null
+
+    @Before
+    fun setUp() {
+        presenter = TileGalleryPresenter(
+                getTilesFromFolderUC,
+                Schedulers.trampoline()
+        )
+    }
     @Test
     fun start() {
         // Given
@@ -34,7 +42,7 @@ class TileGalleryPresenterTest {
                 .willReturn(just(expected))
 
         // When
-        presenter.start(view)
+        presenter?.start(view)
 
         // Then
         verify(view).updateState(TileGalleryView.TileGalleryState(expected))
