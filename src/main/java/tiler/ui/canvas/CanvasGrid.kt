@@ -79,6 +79,12 @@ class CanvasGrid : Canvas() {
             val column = Math.floor(event.x / HARD_CODE_CELL_SIZE)
             val row = Math.floor(event.y / HARD_CODE_CELL_SIZE)
 
+            selectedCellCoordinates?.let {
+                if (sameCell(it, column, row)){
+                    return
+                }
+            }
+
             if (column in 0 until HARD_CODE_GRID_SIZE
                     && row in 0 until HARD_CODE_GRID_SIZE)  {
 
@@ -87,6 +93,8 @@ class CanvasGrid : Canvas() {
                 paintSelectedCell()
             }
         }
+
+        private fun sameCell(it: Dimension2D, column: Double, row: Double) = it.width == column && it.height == row
     }
 
     private fun clearSelectedCell() {
