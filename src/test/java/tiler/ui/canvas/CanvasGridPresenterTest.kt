@@ -2,51 +2,53 @@ package tiler.ui.gallery
 
 import io.reactivex.Observable.just
 import io.reactivex.schedulers.Schedulers
+import javafx.scene.shape.Rectangle
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.*
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import tiler.interactor.getters.GetCellsUC
 import tiler.interactor.getters.GetTilesFromFolderUC
+import tiler.model.Cell
 import tiler.model.SourceImageUrl
 import tiler.model.Tile
-import tiler.ui.gallery.TileGalleryView.TileGalleryState
+import tiler.ui.canvas.CanvasGrid
+import tiler.ui.canvas.CanvasGrid.*
+import tiler.ui.canvas.CanvasGridPresenter
 
 @RunWith(MockitoJUnitRunner::class)
-class TileGalleryPresenterTest {
+class CanvasGridPresenterTest {
 
     @Mock
-    lateinit var getTilesFromFolderUC: GetTilesFromFolderUC
+    lateinit var getCellsUC: GetCellsUC
     @Mock
-    lateinit var sourceImageUrl: SourceImageUrl
-    @Mock
-    lateinit var view: TileGalleryView
+    lateinit var view: CanvasGrid
 
-    var presenter: TileGalleryPresenter? = null
+    var presenter: CanvasGridPresenter? = null
 
     @Before
     fun setUp() {
-        presenter = TileGalleryPresenter(
-                getTilesFromFolderUC,
+        presenter = CanvasGridPresenter(
+                getCellsUC,
                 Schedulers.trampoline()
         )
     }
-
     @Test
     fun start() {
         // Given
         val expected = listOf(
-                Tile(sourceImageUrl, "tile1"),
-                Tile(sourceImageUrl, "tile2")
+                Cell(Rectangle()),
+                Cell(Rectangle())
         )
-        given(getTilesFromFolderUC.getAll(anyString()))
+        given(getCellsUC.cells())
                 .willReturn(just(expected))
 
         // When
         presenter?.start(view)
 
         // Then
-        verify(view).updateState(TileGalleryState(expected))
+        verify(view).updateState(CanvasGridState(expected))
     }
 }

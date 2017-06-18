@@ -24,6 +24,5 @@ open class GetTilesFromFolderUC(
                     }
                 }
                 .toObservable()
-                .observeOn(Schedulers.io())
     }
 }
