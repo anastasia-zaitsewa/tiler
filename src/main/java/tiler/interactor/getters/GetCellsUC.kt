@@ -15,7 +15,7 @@ open class GetCellsUC(
     /**
      * Provides all [Cell]s
      */
-    open fun getAll(): Observable<List<Cell>> {
+    open fun cells(): Observable<List<Cell>> {
         return cellsRepository
                 .cells()
                 .toObservable()

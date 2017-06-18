@@ -5,7 +5,7 @@ import tiler.interactor.getters.GetTilesFromFolderUC
 import tiler.ui.gallery.TileGalleryView.TileGalleryState
 
 /**
- * Presents grid of {@link Tile}s
+ * Presents gallery of tiles
  */
 class TileGalleryPresenter(val getTilesUC: GetTilesFromFolderUC,
                            val mainScheduler: Scheduler) {

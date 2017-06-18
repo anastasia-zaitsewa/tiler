@@ -11,7 +11,6 @@ import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.TilePane
 import javafx.scene.paint.Color
-import tiler.model.FileSourceImageUrl
 import tiler.model.Tile
 
 /**

@@ -6,9 +6,12 @@ import javafx.scene.Scene
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
+import tiler.interactor.getters.GetCellsUC
 import tiler.interactor.getters.GetTilesFromFolderUC
+import tiler.repository.FixGridCellRepository
 import tiler.repository.JavaFileRepository
 import tiler.ui.canvas.CanvasGridImpl
+import tiler.ui.canvas.CanvasGridPresenter
 import tiler.ui.gallery.TileGalleryPresenter
 import tiler.ui.gallery.TileGalleryViewImpl
 
@@ -21,6 +24,7 @@ import tiler.ui.gallery.TileGalleryViewImpl
 class TilerKotlin {
 
     val tileGalleryView = TileGalleryViewImpl()
+    val canvasGrid = CanvasGridImpl()
 
     fun start(primaryStage: Stage) {
 
@@ -28,6 +32,8 @@ class TilerKotlin {
 
         TileGalleryPresenter(GetTilesFromFolderUC(JavaFileRepository()), JavaFxScheduler.platform())
                 .start(tileGalleryView)
+        CanvasGridPresenter(GetCellsUC(FixGridCellRepository()), JavaFxScheduler.platform())
+                .start(canvasGrid)
 
         primaryStage.apply {
             title = "Tiler"
@@ -45,7 +51,7 @@ class TilerKotlin {
 
         val root = BorderPane().apply {
             left = scrollPaneGallery
-            center = CanvasGridImpl()
+            center = canvasGrid
         }
         return root
     }

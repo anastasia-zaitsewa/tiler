@@ -6,23 +6,20 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import tiler.model.Cell
+import tiler.model.DEFAULT_CELL_SIZE
+import tiler.model.DEFAULT_GRID_SIZE
 
 /**
  * Draws grid for canvas
  */
 class CanvasGridImpl : Canvas(), CanvasGrid {
 
-    var gridSize = 0
-    var cellSize = 0.0
-    var cells: List<Cell> = emptyList()
-
-    override fun updateState(state: CanvasGrid.CanvasGridState) {
-        cells = state.cells
-        gridSize = state.gridSize
-        cellSize = state.cellSize
-    }
-
     val gc = graphicsContext2D
+
+    var gridSize = DEFAULT_GRID_SIZE
+    var cellSize = DEFAULT_CELL_SIZE
+
+    var cells: List<Cell> = emptyList()
 
     var selectedCellCoordinates: Dimension2D? = null
 
@@ -31,13 +28,16 @@ class CanvasGridImpl : Canvas(), CanvasGrid {
         width = (cellSize * gridSize)
         onMouseMoved = CellMouseAdapter()
         onMouseExited = EventHandler<MouseEvent> {
-            _ ->
-            clearSelectedCell()
+            _ -> clearSelectedCell()
         }
 
         paintComponent()
     }
 
+    override fun updateState(state: CanvasGrid.CanvasGridState) {
+        cells = state.cells
+        paintComponent()
+    }
 
     fun paintComponent() {
 
@@ -46,13 +46,12 @@ class CanvasGridImpl : Canvas(), CanvasGrid {
         }
 
         gc.stroke = Color.GRAY
-        cells.map { it.rectangle
-        }.forEach {
-                    gc.strokeRect(
-                            it.x, it.y,
-                            it.width, it.height
-                    )
-                }
+        cells.forEach {
+            gc.strokeRect(
+                    it.rectangle.x, it.rectangle.y,
+                    it.rectangle.width, it.rectangle.height
+            )
+        }
     }
 
     private fun paintSelectedCell() {
@@ -72,7 +71,7 @@ class CanvasGridImpl : Canvas(), CanvasGrid {
 
     private inner class CellMouseAdapter : EventHandler<MouseEvent> {
         override fun handle(event: MouseEvent?) {
-            if (event == null) {
+            if (event == null || cells.isEmpty()) {
                 return
             }
 
@@ -98,6 +97,10 @@ class CanvasGridImpl : Canvas(), CanvasGrid {
     }
 
     private fun clearSelectedCell() {
+        if (cells.isEmpty()) {
+            return
+        }
+
         selectedCellCoordinates?.let {
             val rectangle = cells[(it.width + (it.height * gridSize)).toInt()].rectangle
             gc.clearRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height)

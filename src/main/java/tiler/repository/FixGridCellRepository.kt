@@ -4,13 +4,12 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javafx.scene.shape.Rectangle
 import tiler.model.Cell
+import tiler.model.DEFAULT_CELL_SIZE
+import tiler.model.DEFAULT_GRID_SIZE
 
 class FixGridCellRepository : CellRepository {
 
-    val HARD_CODE_GRID_SIZE = 10
-    val HARD_CODE_CELL_SIZE = 50.0
-
-    val cells = ArrayList<Rectangle>(HARD_CODE_GRID_SIZE * HARD_CODE_GRID_SIZE)
+    val cells = ArrayList<Rectangle>(DEFAULT_GRID_SIZE * DEFAULT_GRID_SIZE)
 
     init {
         calculateGrid()
@@ -23,14 +22,14 @@ class FixGridCellRepository : CellRepository {
     }
 
     private fun calculateGrid() {
-        for (row in 0 until HARD_CODE_GRID_SIZE) {
-            for (col in 0 until HARD_CODE_GRID_SIZE) {
+        for (row in 0 until DEFAULT_GRID_SIZE) {
+            for (col in 0 until DEFAULT_GRID_SIZE) {
                 cells.add(
                         Rectangle(
-                                col * HARD_CODE_CELL_SIZE,
-                                row * HARD_CODE_CELL_SIZE,
-                                HARD_CODE_CELL_SIZE,
-                                HARD_CODE_CELL_SIZE
+                                col * DEFAULT_CELL_SIZE,
+                                row * DEFAULT_CELL_SIZE,
+                                DEFAULT_CELL_SIZE,
+                                DEFAULT_CELL_SIZE
                         )
                 )
             }

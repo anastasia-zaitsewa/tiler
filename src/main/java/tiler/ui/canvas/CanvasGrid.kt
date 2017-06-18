@@ -9,8 +9,5 @@ interface CanvasGrid {
 
     fun updateState(state: CanvasGridState)
 
-    data class CanvasGridState(
-            val cells: List<Cell>,
-            val gridSize: Int,
-            val cellSize: Double)
+    data class CanvasGridState(val cells: List<Cell>)
 }
