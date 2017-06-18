@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import tiler.interactor.getters.GetTilesFromFolderUC
 import tiler.repository.JavaFileRepository
-import tiler.ui.canvas.CanvasGrid
+import tiler.ui.canvas.CanvasGridImpl
 import tiler.ui.gallery.TileGalleryPresenter
 import tiler.ui.gallery.TileGalleryViewImpl
 
@@ -45,7 +45,7 @@ class TilerKotlin {
 
         val root = BorderPane().apply {
             left = scrollPaneGallery
-            center = CanvasGrid()
+            center = CanvasGridImpl()
         }
         return root
     }

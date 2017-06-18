@@ -3,7 +3,7 @@ package tiler.ui.gallery
 import tiler.model.Tile
 
 /**
- * Shows grid with {@link Tile}s
+ * Shows gallery with [Tile]s
  */
 interface TileGalleryView {
     fun updateState(state: TileGalleryState)
