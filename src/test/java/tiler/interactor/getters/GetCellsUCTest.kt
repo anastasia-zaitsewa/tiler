@@ -2,15 +2,15 @@ package tiler.interactor.getters
 
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
+import io.reactivex.schedulers.Schedulers
 import javafx.scene.shape.Rectangle
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import tiler.model.Cell
-import tiler.model.Tile
 import tiler.repository.CellRepository
 
 @RunWith(MockitoJUnitRunner::class)
@@ -19,8 +19,13 @@ class GetCellsUCTest {
     @Mock
     lateinit var cellRepository: CellRepository
 
-    @InjectMocks
-    lateinit var uc: GetCellsUC
+
+    var uc: GetCellsUC? = null
+
+    @Before
+    fun setUp() {
+        uc = GetCellsUC(cellRepository)
+    }
 
     @Test
     fun getAll() {
@@ -41,11 +46,14 @@ class GetCellsUCTest {
                 .willReturn(Single.just(cells))
 
         // When
-        val observer: TestObserver<List<Cell>> = uc.cells().test()
+        uc?.cells()?.test()?.let {
 
-        // Then
-        observer.assertValue(expected)
-        observer.assertComplete()
+            val observer: TestObserver<List<Cell>> = it
+
+            // Then
+            observer.assertValue(expected)
+            observer.assertComplete()
+        }
     }
 
 }

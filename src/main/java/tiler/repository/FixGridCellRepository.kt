@@ -1,7 +1,6 @@
 package tiler.repository
 
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import javafx.scene.shape.Rectangle
 import tiler.model.Cell
 import tiler.model.DEFAULT_CELL_SIZE
@@ -18,7 +17,7 @@ class FixGridCellRepository : CellRepository {
     override fun cells(): Single<List<Cell>> {
         return Single.fromCallable {
             cells.map { Cell(it) }
-        }.subscribeOn(Schedulers.io())
+        }
     }
 
     private fun calculateGrid() {

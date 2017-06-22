@@ -29,6 +29,7 @@ class TileGalleryPresenterTest {
     fun setUp() {
         presenter = TileGalleryPresenter(
                 getTilesFromFolderUC,
+                Schedulers.trampoline(),
                 Schedulers.trampoline()
         )
     }

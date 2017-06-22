@@ -11,6 +11,6 @@ class JavaFileRepository : FileRepository {
     override fun listFiles(path: String): Single<List<File>> {
         return Single.fromCallable {
             File(path).listFiles().toList()
-        }.subscribeOn(Schedulers.io())
+        }
     }
 }
